@@ -12,9 +12,9 @@
   <link href="/img/faviconjd32.png" rel="icon">
 
 
-  <!-- 04-21-21 jdj:. adding boxicons cdn for use -->
+  <!-- 04-21-21 jdj:. adding boxicons cdn for use: site errors: omit this garbage
   <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
-
+-->
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -95,8 +95,8 @@
 
       <!-- task table header title: task count (#) -->
       <div class="row pt-lg-5">
-        <div class="col mt-1 rounded shadow-lg">
-          <h2 class="text-center"><span id="TasksTitleCount"></span></h2>
+        <div class="col mt-1 rounded-corners ">
+          <h2 class="text-center text-white bg-dark"><span id="TasksTitleCount"></span></h2>
         </div>
       </div> <!-- end of row -->
 
@@ -106,8 +106,7 @@
       <div class="row">
         <div class="col-6">
           <button type="button" class="btn btn-info btn-outline-dark mb-2" data-toggle="modal"
-            data-target="#addTask"><b>Create
-              Task</b></button>
+            data-target="#addTask"><b>Create Task</b></button>
         </div> <!-- end of col -->
         <div class="col-6 text-right">
           <button type="button" class="btn btn-danger btn-outline-dark  mb-2" onclick="tblClearAllTasks()"><b>Delete
@@ -252,8 +251,10 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
 
-  <!-- 04-21-21 jdj:. adding boxicons cdn for use -->
+  <!-- 04-21-21 jdj:. adding boxicons cdn for use: site errors, omit this
   <script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
+-->
+
 
   <!-- 04-19-21 jd: added for emailjs -->
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>

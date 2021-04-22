@@ -75,6 +75,12 @@ body {
   background: linear-gradient(to right, #757a92, #F0F2F0);
 }
 
+.my-tbl-title {
+  background: black;
+  color: white;
+
+}
+
 #index {
   background: #6D6027;
   /* fallback for old browsers */

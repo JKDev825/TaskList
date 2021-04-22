@@ -100,21 +100,65 @@ function tblClearAllTasks() {
        let test7 = rowItem.parentElement.parentElement.children[0].innerText;
 */
 
+
+/*
+ ** .This will be called from html.  
+ ** .It will call swal to prompt and if yes the callback
+ **  to tblRowMarkCompleteCallback(rowItem) will happen.
+ **
+ ** .Now, logic to set "completed" on a task.
+ ** .if the task is not completed then mark complete and return; no user prompt.
+ ** .if the task is already marked prompt the user first to unmark it.
+ **
+ **
+ */
 function tblRowMarkComplete(rowItem) {
 
+    if (isTblRowMarkComplete(rowItem) == true) {
+        swalYesNoFPCallback("Would You Like to unmark this item?", "",
+            (function () {
+                tblRowMarkCompleteAndStore(rowItem);
+            }));
+        return null;
+    }
+
+    /*
+    testFP(function () {
+        return testReceiveFP("parm worked too");
+    });
+    return;
+    */
+
+    tblRowMarkCompleteAndStore(rowItem);
+    return null;
+} /* end of tblRowMarkComplete() */
+
+/*
+ ** .just check and tell call if the task is marked completed.
+ */
+function isTblRowMarkComplete(rowItem) {
     let dataSet = getDataFromStorage();
+    let rowTaskId = getTaskIdFromElement(rowItem);
+
+    let rowtask = dataSet.find(t => t.id == rowTaskId);
+    return rowtask.completed;
+
+} /* end of isTblRowMarkComplete() */
 
 
-    let rowTaskId = rowItem.parentElement.parentElement.children[0].innerText;
-    let tstrowTaskId = getTaskIdFromElement(rowItem);
+
+function tblRowMarkCompleteAndStore(rowItem) {
+
+    let dataSet = getDataFromStorage();
+    let rowTaskId = getTaskIdFromElement(rowItem);
 
     let rowtask = dataSet.find(t => t.id == rowTaskId);
     rowtask.completed = true;
 
     putDataToStorage(dataSet);
 
-    displayTaskList()
-    //  showDebugMsg("mark complete called");
+    displayTaskList();
+
     return null;
 } /* end of tblRowMarkComplete */
 
@@ -223,7 +267,7 @@ function DeleteTaskByElement(rowItem) {
 function getTaskIdFromElement(currElement) {
 
     let rowTaskId = currElement.parentElement.parentElement.children[0].innerText;
-    let rowDBId = currElement.parentElement.parentElement.children[4].innerText;
+    //    let rowDBId = currElement.parentElement.parentElement.children[4].innerText; code to double check 2nd id
 
     return rowTaskId;
 }
@@ -530,6 +574,66 @@ function formatDateMMDDYYYY(dateString) {
     return dateStrmmddyy;
 
 } // end of formatDateMMDDYYYY()
+
+
+
+
+function testFP(fpvar) {
+
+    fpvar();
+
+}
+
+function testReceiveFP(msg) {
+    alert(msg);
+}
+
+/*
+ ** .Sweet Alert YNCancel with passed function ptr on Y-confirmed.
+ **
+ ** .issue: when you call swal you loose control and don't know user's response.
+ ** .I need a generic way to execute a function when yes is selected.
+ **
+ ** .I can pass a function pointer into the function for a yes action.
+ ** 
+ ** swalYesNoFPCallback(msg prompt, post confirm msg, function pointer)
+ **    .msg prompt = used to prompt the user for their y/n response
+ **    .post confirm msg = after yes a last "success" msg is dislayed.  If empty "" no post msg.
+ **    .fp_callback = function pointer that will be called if the user selects Yes.
+ **
+ ** Parent call for function pointer.  The use an anonymous function which can include parameters.
+ ** i.e: swalYesNoFPCallback("are you sure?", "action worked", function() { return funcname(parm1, parm2, etc);});
+ ** .if yes is selected the "funcname(parm1, parm2, etc)" will be called.
+ **
+ **
+ */
+function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
+    Swal.fire({
+        title: `${msgStrPrompt}`,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: `Yes`,
+        denyButtonText: `No`,
+        customClass: {
+            cancelButton: 'order-1 right-gap',
+            confirmButton: 'order-2',
+            denyButton: 'order-3',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (msgStrPostConfirm != "") {
+                Swal.fire('Complete!', '', 'success');
+            }
+            if (fp_callback != null) {
+                fp_callback();
+            }
+        } else if (result.isDenied) {
+            Swal.fire('Cancelled', '', 'info');
+        }
+    })
+} /* end of swalYesNowFPCallback */
+
+
 
 
 /*
