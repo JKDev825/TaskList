@@ -153,7 +153,17 @@ function tblRowMarkCompleteAndStore(rowItem) {
     let rowTaskId = getTaskIdFromElement(rowItem);
 
     let rowtask = dataSet.find(t => t.id == rowTaskId);
-    rowtask.completed = true;
+
+    /*
+     ** 04-22-21 jdj: ui changed to use the checkmark as a toggle for mark and unmark.
+     **  .add logic here to do the same.  
+     */
+
+    if (rowtask.completed == true) {
+        rowtask.completed = false;
+    } else {
+        rowtask.completed = true;
+    }
 
     putDataToStorage(dataSet);
 
@@ -627,9 +637,12 @@ function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
             if (fp_callback != null) {
                 fp_callback();
             }
-        } else if (result.isDenied) {
+        }
+        /* omit the 2ndary notification on cancel; annoying
+        else if (result.isDenied) {
             Swal.fire('Cancelled', '', 'info');
         }
+        */
     })
 } /* end of swalYesNowFPCallback */
 
