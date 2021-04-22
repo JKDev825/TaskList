@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Task List Application</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <!-- Favicons 04-09-21 jdj: custom favicon -->
+  <link href="/img/faviconjd32.png" rel="icon">
+
+
+  <!-- 04-21-21 jdj:. adding boxicons cdn for use -->
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- Custom CSS jd: added this from getbootstrap nav, view source, find css reference, open, copy paste all into site.css -->
+  <link rel="stylesheet" href="/CSS/site.css">
+
+
+</head>
+
+
+<!-- <body id="index"> -->
+
+<body id="index" onload="onloadEnvInit()">
+
+  <!-- jd: from getbootstrap.com with nav bar, view source html, cut and past from under body the header through footer -->
+
+  <header>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <a class="navbar-brand" href="#">Task List Application</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Application</a>
+
+          <li class="nav-item">
+            <a class="nav-link" href="CodeView.html">Code Review</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="CodeGet.html">Code Grab</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://jkdev825.netlify.app/" target="_blank">Portfolio</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="jumbotron jumbotron-fluid header">
+    <div class="container hero">
+      <div>
+        <br>
+        <!--         <h1 style="color:white">App Skel2</h1> depending on backgroup text to be black or white -->
+        <!--       <h1>Task List Application</h1>  leaving this out: photo has a title -->
+        <!--    <h4 style="color:white">Reverse String Excercise</h4> -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Begin page content -->
+  <!--  <main role="main" class="flex-shrink-0"> -->
+  <main role="main" class="container-fluid">
+
+    <div class="container mt-lg-2">
+      <div class="row">
+        <!--        <div class="col mt-1 border border-dark rounded shadow-lg"> -->
+        <div class="col mt-1 rounded shadow-lg">
+          <h2 class="text-center">Task List Application</h2>
+          <h6><b>ToDo Lists</b></h6>
+          <h5 class="text-md-center"><b>Please Explore</b></h5>
+        </div>
+      </div>
+      <hr>
+    </div>
+
+
+    <!-- table area container -->
+    <div class="container mt-lg-2 pt-lg-5">
+
+      <!-- task table header title: task count (#) -->
+      <div class="row pt-lg-5">
+        <div class="col mt-1 rounded shadow-lg">
+          <h2 class="text-center"><span id="TasksTitleCount"></span></h2>
+        </div>
+      </div> <!-- end of row -->
+
+
+      <!-- table header buttons for add and delete all -->
+      <hr>
+      <div class="row">
+        <div class="col-6">
+          <button type="button" class="btn btn-info btn-outline-dark mb-2" data-toggle="modal"
+            data-target="#addTask"><b>Create
+              Task</b></button>
+        </div> <!-- end of col -->
+        <div class="col-6 text-right">
+          <button type="button" class="btn btn-danger btn-outline-dark  mb-2" onclick="tblClearAllTasks()"><b>Delete
+              All
+              Tasks</b></button>
+
+        </div> <!-- end of col -->
+      </div> <!-- end of row-->
+
+      <table class="table table-striped shadow-lg rounded-corners" id="PaymentTable">
+        <thead class="thead-dark">
+          <tr id="TaskRow">
+            <th>Title</th>
+            <th>Created</th>
+            <th>Due Date</th>
+            <th></th> <!-- for the data-id column and needed to stretch the tbl header -->
+            <th></th> <!-- control icons here -->
+          </tr>
+        </thead>
+        <tbody id="resultsBody">
+          <!-- data for the event table book will go here -->
+        </tbody>
+      </table>
+    </div> <!-- end of container -->
+
+
+
+  </main>
+
+  <footer class="footer">
+    <div class="container ml-1">
+      <span class="text-muted">&copy; Copyright jkDev825 2021</span>
+    </div>
+  </footer>
+
+
+  <!-- taskid = cell uniquely identify the task item in local storage -->
+  <!-- title  = user title for the task -->
+  <!-- created = date created automatic on store -->
+  <!-- dueData  = user defined due date -->
+  <!-- db_id    = belive it will be the id for dataset in a server or a supidx to further the app to store notes on a server -->
+  <!-- a  = anchor tags to display action icons and connect jasvasource -->
+  <template id="TaskList-Table-Template">
+    <tr id="TaskListRow">
+      <td class="d-none" id="taskid"></td>
+      <td id="title"></td>
+      <td id="created"></td>
+      <td id="dueDate"></td>
+      <td class="d-none" id="db_id" data-id=""></td>
+      <td id="icons"></td>
+      <td class="btn-group" role="group" aria-label="">
+        <button type="button" class="btn btn-sm btn-primary tbl-icon" onclick="tblRowMarkComplete(this)">c</button>
+        <button type="button" class="btn btn-sm btn-success tbl-icon" onclick="tblRowEditTask(this)">e</button>
+        <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button>
+      </td>
+    </tr>
+  </template>
+
+  <!--
+        <button type="button" class="btn btm-sm btn-primary tbl-icon" onclick="tblRowMarkComplete(this)">✔️</button>
+        <button type="button" class="btn btn-sm btn-secondary tbl-icon" onclick="tblRowEditTask(this)">✏️</button>
+        <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button>
+-->
+
+
+
+
+
+  <!-- Modal html -->
+
+  <div class="modal fade" id="addTask">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add a new task</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="newTaskForm">
+            <div class="form-group">
+              <label for="newTaskName">Task Name</label>
+              <input type="text" class="form-control" id="newTaskName" placeholder="Task Name">
+            </div>
+            <div class="form-group">
+              <label for="newDueDate">Date</label>
+              <input type="date" class="form-control" id="newDueDate" pattern="[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"
+                placeholder="mm/dd/ccyy">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" onclick="tblCreateTask()" data-dismiss="modal">Create</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- end of createtask modal -->
+
+
+  <div class="modal fade" id="editTaskModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Update Task Entry</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="editTaskForm">
+            <div class="form-group">
+              <label for="editTaskName">Task Name</label>
+              <input type="text" class="form-control" id="editTaskName" placeholder="Task Name">
+            </div>
+            <div class="form-group">
+              <label for="editDueDate">Date</label>
+              <input type="date" class="form-control" id="editDueDate" pattern="[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"
+                placeholder="mm/dd/ccyy">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" onclick="tblEditTask()" data-dismiss="modal">Save</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- end of edittask modal -->
+
+
+  <!-- end of modal html -->
+
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+
+  <!-- 04-21-21 jdj:. adding boxicons cdn for use -->
+  <script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
+
+  <!-- 04-19-21 jd: added for emailjs -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <script src="js/site.js"></script>
+
+
+  <!-- Button hook from html into js -->
+  <!-- for taco cat js
+ <script>
+    document.getElementById("tacoBtn").addEventListener("click", tc_reverseString);
+  </script>
+-->
+
+  <!-- 04-15-21 jdj:  Comment out but keep for reference  Direct calls to JS above from buttons onclick
+  <script>
+    document.getElementById("submitBtn").addEventListener("click", fz_FizzBuzzTableArray);
+  </script>
+-->
+
+</body>
+
+</html>

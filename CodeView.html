@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Task List Application</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <!-- Favicons 04-09-21 jdj: custom favicon -->
+  <link href="/img/faviconjd32.png" rel="icon">
+
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link href="css/prismTwilight.css" rel="stylesheet" />
+  <!-- 04-13-21 jdj: from prismjs.com for source code highlighting -->
+
+
+  <!-- Custom CSS jd: added this from getbootstrap nav, view source, find css reference, open, copy paste all into site.css -->
+  <link rel="stylesheet" href="/CSS/site.css">
+
+</head>
+
+<body id="codev">
+
+  <!-- jd: from getbootstrap.com with nav bar, view source html, cut and past from under body the header through footer -->
+
+  <header>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <a class="navbar-brand" href="#">Task List Application</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+
+          <a class="nav-link" href="index.html">Application</a>
+
+          <li class="nav-item">
+          <li class="nav-item active">
+            <a class="nav-link" href="CodeView.html">Code Review<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="CodeGet.html">Code Grab</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://jkdev825.netlify.app/" target="_blank">Portfolio</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <div class="jumbotron jumbotron-fluid header">
+    <div class="container hero">
+      <div>
+        <br>
+        <!-- <h1>Super Dog Events</h1> leaving this out: photo has a title -->
+        <!--    <h4 style="color:white">Reverse String Excercise</h4> -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Begin page content -->
+  <main role="main" class="flex-shrink-0">
+
+    <div class="container mt-lg-2">
+      <div class="row">
+        <!--        <div class="col mt-1 border border-dark rounded shadow-lg"> -->
+        <div class="col mt-1 rounded shadow-lg">
+          <h2 class="text-center">JavaScript Code Review</h2>
+          <h6> <b>The application leverages an HTML template to build the main data display. It also dynamically builds
+              the contents for a dropdown menu that allows the user to filter statistics by location. Dataset
+              initialization, table and statistics displays, and the dropdown menu build are accomplished upon javascript
+              load and HTML body onload= events. I welcome any questions you may have regarding the source code below.
+            </b></h6>
+          <h5 class="text-md-center"><b>The full application was written using HTML, JavaScript, jQuery, CSS, and
+              Bootstrap v4.
+            </b></h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <hr>
+      <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="card bg-light rounded-corners shadow-lg border-dark">
+            <div class="card-header bg-dark">
+              <ul class="nav nav-pills card-header-tabs bg-dark" id="source-list" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="tab-src1" data-toggle="tab" href="#source-1" role="tab"
+                    aria-controls="instructions" aria-selected="true"><b>Data</b></a>
+                </li>
+                <li class="nav-item ">
+                  <a class="nav-link" id="tab-src2" data-toggle="tab" href="#source-2" role="tab"
+                    aria-controls="instruction-card2" aria-selected="false"><b>DropdownMenu</b></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-src3" data-toggle="tab" href="#source-3" role="tab"
+                    aria-controls="event-details" aria-selected="false">DataUpdates</a>
+                </li>
+              </ul>
+            </div>
+            <!--       <div class="card-body" style="background-color: rgba(9, 56, 30, 0.555);"> -->
+            <div class="card-body" style="background-color: rgba(9, 56, 30, 0.555);">
+
+              <div class="tab-content mt-3">
+                <div class="tab-pane active" id="source-1" role="tabpanel">
+                  <h6 class="card-title">Data access functions to isolate JSON calls. Initial data display from a static
+                    object array. Local storage is used thereafter for updates. </h5>
+                    <div class="col-12 line-numbers">
+                      <pre><code class="language-javascript">/*
+** .js entry point.
+** .get initial dataset.
+** .set the filteredEvents[] array for stats display.
+** .display the full dataset.
+*/
+function loadEventData() {
+
+    eventData = initGetEventData();
+
+    setFilteredEvents("All"); /* initialize filterEvents[] array for 1st time load of stats table */
+    displayStats();
+    displayEventData(eventData);
+
+    return null;
+} /* end of loadEventData() */
+
+/*
+ ** Data Access Routines:
+ **
+ ** .Application calls will use getEventData() and putEventData() for access.
+ ** .consolidate logic for JSON storage to omit multiple application references.
+ ** .this allows for flexibility in replacing the data access layer if needed.
+ ** .this exercise excludes error handling but this is where it would be included.
+ ** 
+ ** .Note: the static array and storage share the same name "eventArray"
+ */
+function getEventDataFromStorage(createNewFromArray) {
+
+    let eventData = "";
+
+    if (createNewFromArray == true) {
+        eventData = JSON.parse(localStorage.getItem("eventArray")) || [];
+    } else {
+        eventData = JSON.parse(localStorage.getItem("eventArray")) || eventArray;
+    }
+
+    return eventData;
+
+} /* end of getEventDataFromStorage */
+
+function putEventData(dataSet) {
+
+    /**
+     ** .future lessons yet to be had regarding error i/o handling best practices
+     ** .error logic would be added to respective data access errors.
+     */
+    localStorage.setItem("eventArray", JSON.stringify(dataSet));
+
+    return true;
+
+} /* end of putEventData() */
+ */</code></pre>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="source-2" role="tabpanel" aria-labelledby="instruction-card2">
+                  <h6 class="card-title">The drop down menu lists unique locations from the full dataset. It filters
+                    by location and builds the HTML and callback into the JavaScript using onclick=getEvent().
+                  </h6>
+
+                  <div class="container">
+                    <div class="row stats-row">
+                      <div class="col line-numbers">
+                        <pre><code class="language-javascript">/*
+ ** .HTML entry point from body tage onload=buildDropDown()
+ ** .controls build of the drop down menu for location selections.
+ ** .Update the statistics and full datset displays.
+ */
+function buildDropDown() {
+    buildDropDownMenu(); // build city drop down list
+    updateEventDataDisplays();
+    return null;
+} /* end of buildDropDown() */
+
+/*
+ ** .create location drop down menu for statistics
+ ** .takes a copy of the current data table
+ ** .creates a new array with just a list of distinct city names.
+ ** .builds the line level html with onclick=getEvent to allow a location specific selection and refresh
+ ** .ending html that includes all locations.
+ */
+function buildDropDownMenu() {
+    let eventDD = document.getElementById("eventDropDown");
+    let eventDataList = getEventData(); /* get the list from disk or the static array at the top */
+
+    /*   let distinctEvents = [...new Set(eventArray.map((eventArray) => eventArray.city))]; */
+    let distinctEvents = [...new Set(eventDataList.map((eventDataList) => eventDataList.city))];
+
+
+    /* builds the html for the drop down list and callback to getEvents() using onclick() for each location displayed */
+    let linkHTMLEnd =
+        '[div class="dropdown-divider"][/div][a class="dropdown-item" onclick="getEvents(this)" data-string="All"]All[a]';""
+
+    let resultHTML = "";
+
+    for (let i = 0; i < distinctEvents.length; i++) {
+        resultHTML += `[a class="dropdown-item" onclick="getEvents(this)" data-string="${distinctEvents[i]}">${distinctEvents[i]}[/a]`;
+    }
+    resultHTML += linkHTMLEnd;
+    eventDD.innerHTML = resultHTML;
+
+    return null;
+
+} /* end of buildDropDownMenu */
+</code></pre>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tab-pane fade" id="source-3" role="tabpanel" aria-labelledby="deals-tab">
+                  <h6 class="card-title">An HTML form class was used to collect new event data. New data is appended
+                    onto the existing dataset. Logic was written to inspect the entered location against the existing
+                    location statistics table display. If they are the same the location specific values display is
+                    updated upon save. New locations will be added to the next dropdown menu and total statistics
+                    updated.</h5>
+
+                    <div class="container">
+                      <div class="row stats-row">
+                        <div class="col line-numbers">
+                        <pre><code class="language-javascript">
+/*
+ ** .user save new event form.
+ ** .form validation is NOT being applied for this exercise.
+ ** .grab the current dataset
+ ** .build a new object with the form contents and push onto the dataset and save.
+ ** .check if the current display stats header location matches the new form data.
+ ** .if it does update the stats window with the new data totals
+ ** .Also update the totals display if current on "All"
+ ** .rebuild the dropdown and update all displays.
+ */
+function saveEventFormData() {
+
+    /* let eventData = JSON.parse(localStorage.getItem("eventArray")) || eventArray; */
+    let eventData = getEventData(); /* get the current data set */
+    let formCityName = "";
+    let obj = {};
+
+    obj["event"] = document.getElementById("newEvent").value;
+    obj["city"] = document.getElementById("newCity").value;
+    obj["state"] = document.getElementById("newState").value;
+    obj["attendance"] = parseInt(document.getElementById("newAttendance").value, 10);
+    obj["date"] = document.getElementById("newDate").value;
+
+    eventData.push(obj);
+
+    /* localStorage.setItem("eventArray", JSON.stringify(eventData)); replaced with putEventData() */
+    putEventData(eventData);
+
+    let hdrCityStr = document.getElementById("statsHeader").innerHTML;
+    hdrCityStr = normalizeString(hdrCityStr);
+    hdrCityStr = hdrCityStr.replace("STATSFOR", "");
+    hdrCityStr = hdrCityStr.replace("EVENTS", "");
+
+    formCityName = obj["city"];
+    if (compareStringsTheSame(normalizeString(formCityName), hdrCityStr) == true || hdrCityStr == "ALL") {
+
+        if (hdrCityStr == "ALL") {
+            setFilteredEvents("All"); /* update filteredEvents[] for displaystats() */
+        } else {
+            setFilteredEvents(formCityName); /* update filteredEvents[] for displaystats() */
+        }
+    }
+
+
+    buildDropDown(); /* update dropdown menu to included the new dataset entry if unuique. */
+    updateEventDataDisplays(); /* update the stats and main table data displays */
+    document.getElementById("newAEventForm").reset(); /* reset the contents of the form */
+    return null;
+} /* end of saveEventData() */
+
+/*
+** .update the global filteredEvents[] array with the location string passed.
+*/
+function setFilteredEvents(matchCityName) {
+let curEvents = getEventData(); /* get the current data set */
+
+filteredEvents = curEvents;
+if (matchCityName != "All") {
+//Explain how array filtering works-
+filteredEvents = curEvents.filter(function (item) {
+if (item.city == matchCityName) {
+return item;
+}
+});
+}
+return null;
+} /* end of setFilteredEvents() */
+</code></pre>
+
+</div>                      
+</div> <!-- end of row -->
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- card class end -->
+        </div> <!-- col end -->
+      </div> <!-- row end-->
+    </div> <!-- container end -->
+
+
+
+
+
+
+
+
+
+  </main>
+
+
+  <footer class="footer">
+    <div class="container ml-1">
+      <span class="text-muted">&copy; Copyright jkDev825 2021</span>
+    </div>
+  </footer>
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+
+  <script src="js/prismTwilight.js"></script> <!-- 04-13-21 jdj: from prismjs.com to highlight displayed source code -->
+
+</body>
+
+</html>

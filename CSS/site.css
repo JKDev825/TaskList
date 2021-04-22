@@ -1,0 +1,363 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+
+/*
+**
+** 04-09-21 jdj: Placemarker area to store different background colors and gradients.
+**               .https: //uigradients.com select show all gradients and a select color
+**              .click get css in top right under <> and click copy .css from popout
+**              .in site.css add a new and empty body {} or add to existing {} if exists and paste contents within.
+**                           1st line comments: fallback for old browsers
+**                           2nd line:          Chrome 10-25,Safari 5.1-6
+**                           3rd line:           W3C,IE 10+ Edge,Firefox 16+,Chrome 26+,Opera 12+,Safari 7+
+**                   
+**
+**  uiGradient: lithium (grey-taupes, more yellow)
+**  background: #6D6027;
+**  background: -webkit-linear-gradient(to right, #D3CBB8, #6D6027);
+**  background: linear-gradient(to right, #D3CBB8, #6D6027);
+**
+**
+** uiGradient: Pure Lust (deep reds)
+** background: #333333;
+** background: -webkit-linear-gradient(to right, #dd1818, #333333);
+** background: linear-gradient(to right, #dd1818, #333333);
+**
+**
+** uiGradient: Under the Lake (green shading)
+** background: #093028;
+** background: -webkit-linear-gradient(to right, #237A57, #093028);
+** background: linear-gradient(to right, #237A57, #093028);
+**
+**
+** uiGradient: What Lies Beyond (light blue to dark left to right
+** background: #F0F2F0;
+** background: -webkit-linear-gradient(to right, #000C40, #F0F2F0);
+** background: linear-gradient(to right, #000C40, #F0F2F0);
+**
+** Note Drew created the "#index" "#app", etc with the background entries
+**      and removed them from inside the "body{}" and just left the original "margin-bottom" there.
+**     .Then within each separate .html page changed "<body>" to be "<body id=index>" and
+**      "<body id="app"> etc and this is how it can be overwritten.
+**     .Then just updated the 3rd hex value of only the linear-gradient parm which kept the left
+**      page lighter and consistent and only the right side would change.
+**
+*/
+
+/*
+** trying to center the button for the code grab page */
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+/**/
+
+body {
+
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+
+.my-bg-color {
+  background: #F0F2F0;
+  background: -webkit-linear-gradient(to right, #000C40, #F0F2F0);
+  background: linear-gradient(to right, #757a92, #F0F2F0);
+}
+
+#index {
+  background: #6D6027;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #D3CBB8, #6D6027);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #D3CBB8, #6D6027);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #f5f5f5;
+}
+
+#app {
+  background: #6D6027;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #D3CBB8, #6D6027);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #D3CBB8, #884507c4);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #b61818
+}
+
+#codev {
+  background: #6D6027;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #D3CBB8, #6D6027);
+  /* Chrome 10-25, Safari 5.1-6 */
+  /*   background: linear-gradient(to right, #D3CBB8, #093028); */
+  background: linear-gradient(to right, #D3CBB8, #0c6654);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #f5f5f5;
+}
+
+#codeg {
+  background: #6D6027;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #D3CBB8, #6D6027);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #D3CBB8, #1c078d);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #f5f5f5;
+}
+
+#about {
+  background: #6D6027;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #D3CBB8, #6D6027);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #D3CBB8, #aa2053);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-color: #f5f5f5;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px;
+  /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+  -------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body>.container {
+  padding: 60px 15px 0;
+}
+
+.footer>.container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.header {
+  background-color: #76B1DB;
+}
+
+/*
+** From js practice tables "jsSkeleton"
+** add html within header section after nav.  this will post the image on the left
+*/
+@media (min-width: 768px) {
+  .header {
+    background-image: url("/img/TaskList.jpg");
+    background-repeat: no-repeat;
+    height: 290px;
+    /* jd added */
+    background-size: cover;
+    background-position: fixed;
+    background-color: #329cb2;
+  }
+
+  .hero {
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 5px 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+}
+
+/*
+** 04-14-21 jdj: added for FizzBuzz
+**               .This is refereneced within the fz_FizzBuzzTableArray() javascript.
+**               .styple information is applied per cell using the attributes below to highligh certain results.
+*/
+
+.boldIt {
+  font-weight: bolder;
+  color: coral;
+  font-size: large;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.boldFizz {
+  font-weight: bolder;
+  color: rgb(27, 112, 39);
+  font-size: medium;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.boldBuzz {
+  font-weight: bolder;
+  color: rgb(84, 22, 90);
+  font-size: medium;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.boldFizzBuzz {
+  font-weight: bolder;
+  color: rgb(20, 54, 148);
+  font-size: medium;
+  font-style: italic;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+/* 04-14-21 jdj: added this for screen error notes section. */
+.noteBuzzErr {
+  font-weight: bold;
+  color: rgb(99, 9, 9);
+  font-size: medium;
+}
+
+.noteBuzzOk {
+  font-weight: bold;
+  color: rgb(35, 110, 51);
+  font-size: medium;
+}
+
+/* 04-15-21 jdj: creates a bolder and larger <hr> header line */
+hr {
+  border: 1px solid #014474;
+  border-radius: 2px;
+}
+
+/*
+**
+** 04-09-21 jdj: .create a class to round all images.
+**               "img.rounded-corners" here using border-radius.
+**               html will be "<img src="xx.jpg" class="rounded-corners"/>
+**
+*/
+img.rounded-corners {
+  /* border: 2px solid red; */
+  border-radius: 30px;
+  /* box-shadow: 10px 10px 5px grey; it shows the card sqare corners */
+  object-fit: cover;
+}
+
+img.img-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/*
+** taken from w3 schools for image flip
+*/
+/* The flip box container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.flip-box {
+  background-color: transparent;
+  width: 300px;
+  height: 200px;
+  position: absolute;
+  align-items: center;
+  border: 1px solid #f1f1f1;
+  perspective: 1000px;
+  /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-box-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-box:hover .flip-box-inner {
+  transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.flip-box-front,
+.flip-box-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-box-front {
+  background-color: #bbb;
+  color: black;
+}
+
+/* Style the back side */
+.flip-box-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.body-bg-color {
+  background-color: rgba(9, 56, 30, 0.555);
+}
+
+
+/*
+** 04-20-21 jdj: sweet alert CSS for cancel, yes, no buttons
+*/
+.order-1 {
+  order: 1;
+}
+
+.order-2 {
+  order: 2;
+}
+
+.order-3 {
+  order: 3;
+}
+
+.right-gap {
+  margin-right: auto;
+}
+
+/*
+** .04-21-21 jdj:.table row icon styling.
+*/
+.tbl-icon {
+  font-size: 24px;
+  text-shadow: 2px 2px 4px #000000;
+
+}
+
+/*
+** 04-21-21 jdj: Jason example:
+** .html: add int "tr class="complete".  This applies to all children
+** . > tells it not the tr but elements under.
+** . nth-child -n+4 says only the first 3 td's 
+*/
+
+tr.completed>td:nth-child(-n+4) {
+  text-decoration: line-through;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
