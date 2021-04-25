@@ -22,21 +22,63 @@ function onloadEnvInit() {
     displayTaskList();
 
     return null;
-
 }
+
+
+/*
+ ** .hide the deleta all button if not tasks exist
+ ** .cannot confirm through external research the following behavior.
+ **
+ ** .I had something similar in fizzbuzz setting the css style attribute and not updating.
+ **    .that was using element.classList.add("css class name"); to set the style attribute
+ **    .I found mutliple calls to the same logic only kept the first assignment and
+ **     subsequent values would be ignored as if the limit was reached for the array variable.
+ **    .don't know and was only told lmgtfy from which I can't find anything.
+ **    .I corrected it, proper or not, with element.classList.remove("css class name"); multiple
+ **     times for the different values I was using. 
+ **
+ ** .This issue happens when I delete all tasks, or if 1 there delete the 1, and the button hides
+ **  properly.
+ ** .Then create 1 new task.  The form data is stored properly.  The call to set the button
+ **  happens once.Task count shows 1 but the[ = "block text-righ"] assignment won't take!?
+ ** .the style.diplay value still shows "none".
+ **
+ **
+ **
+ */
+function setDeleteAllButtonDisplay() {
+
+    let taskCount = getTaskListCount();
+    let btnDelAll = document.getElementById("btnDelAll");
+
+    //    btnDelAll.classList.remove("none");
+    //    btnDelAll.classList.remove("block text-right");
+
+
+    if (taskCount == 0) {
+        // btnDelAll.disabled = true;
+        btnDelAll.style.display = "none";
+    } else {
+        // btnDelAll.disabled = false;
+        btnDelAll.style.display = "block text-right";
+
+    }
+    return null;
+} // end of setDeleteAllButtonDisplay()
+
 
 /*
  ** .add a new task to the dataset.
  ** .called from table header button
  */
 function tblCreateTask(formData) {
-    let newTaskData = createTaskFormDataToObj();
+    let newTaskFormObj = createTaskFormDataToObj();
 
-    validateNewTask(newTaskData);
-    if (newTaskData.dataOK == false) {
+    validateNewTask(newTaskFormObj);
+    if (newTaskFormObj.dataOK == false) {
         return;
     }
-    tblStoreNewTask(newTaskData);
+    tblStoreNewTask(newTaskFormObj);
 
     displayTaskList();
 } /* end of tblCreateTask */
@@ -50,18 +92,36 @@ function tblCreateTask(formData) {
  **  before the swal window is shown.
  **
  **
+ ** 04-25-21 jdj: replace logic to use the swal with function pointer parameters
+ **
+ **
  */
 function tblClearAllTasks() {
 
-    let ans = swalYesNoPrompt("Delete All Data !?");
 
-    if (ans == false) {
-        return;
+    let taskCount = getTaskListCount();
+    let msgPrompt = "Delete Task?";
+
+    if (taskCount > 1) {
+        msgPrompt = `Delete All ${taskCount} Tasks?`
     }
+
+    swalYesNoFPCallback(msgPrompt, "Task(s) Deleted",
+        (function () {
+            tblClearAllTasksAction();
+        }));
+
     //   showDebugMsg("clearalltasks called: ans to delete ");
 
     return null;
 } /* end of tblClearAllTasks() */
+
+function tblClearAllTasksAction() {
+    purgeDataStorage();
+    displayTaskList();
+    return null;
+}
+
 
 
 /*
@@ -179,12 +239,36 @@ function tblRowEditTask(rowItem) {
 
     let modal = document.getElementById("editTaskModal");
 
+    editTaskDataToForm(modal, rowItem);
+
     $('#editTaskModal').modal('show');
     //    modal.style.display = "block";
 
-    let test = 0;
+    let test = 0; // checking to see if control returns here post form.
     return null;
 } /* end of tblRowMarkComplete */
+
+/*
+ ** .capture new task form data into an object
+ */
+function editTaskDataToForm(form, rowItem) {
+
+    /* left off here */
+    let dataSet = getDataFromStorage();
+    let rowTaskId = getTaskIdFromElement(rowItem);
+
+    let rowTask = dataSet.find(t => t.id == rowTaskId);
+
+    form.getElementById("editTaskName").textContent = rowTask.title;
+    //  form.getElementById("created").textContent = formatDateMMDDYYYY(rowTask.created);
+    form.getElementById("editDueDate").textContent = formatDateMMDDYYYY(rowTask.dueDate);
+    //  form.getElementById("db_id").textContent = rowTask.id;
+
+    return null;
+} /* end of createTaskFormDataToObj */
+
+
+
 
 /*
  ** .called from table row control to delete the current task item.
@@ -277,7 +361,21 @@ function DeleteTaskByElement(rowItem) {
 function getTaskIdFromElement(currElement) {
 
     let rowTaskId = currElement.parentElement.parentElement.children[0].innerText;
-    //    let rowDBId = currElement.parentElement.parentElement.children[4].innerText; code to double check 2nd id
+    let rowDBId = currElement.parentElement.parentElement.children[4].innerText;
+
+
+    let test = currElement.parentNode;
+    let test2 = currElement.parentNode.parentNode;
+    let test5 = test.parentNode;
+    let test3 = currElement.parentElement;
+    let test4 = currElement.parentElement.parentElement;
+    let test6 = test3.parentElement;
+    let test7 = currElement.parentElement.parentElement.children[0].innerText;
+
+    let ptestn1 = currElement.parentNode.parentNode;
+    let pteste1 = currElement.parentNode.parentNode;
+    let ptestnc1 = currElement.parentNode.parentNode.children;
+    let ptestec1 = currElement.parentElement.parentElement.children;
 
     return rowTaskId;
 }
@@ -292,6 +390,7 @@ function displayTaskList() {
     let dataSet = getDataFromStorage();
 
     setTaskTitleCount();
+    setDeleteAllButtonDisplay();
 
     resultsBody.innerHTML = "";
 
@@ -304,10 +403,10 @@ function displayTaskList() {
         }
         /* */
 
-        dataRow.getElementById("taskid").textContent = dataSet[x].id;
         dataRow.getElementById("title").textContent = dataSet[x].title;
         dataRow.getElementById("created").textContent = formatDateMMDDYYYY(dataSet[x].created);
         dataRow.getElementById("dueDate").textContent = formatDateMMDDYYYY(dataSet[x].dueDate);
+        dataRow.getElementById("taskid").textContent = dataSet[x].id;
         dataRow.getElementById("db_id").textContent = dataSet[x].id;
 
         resultsBody.appendChild(dataRow);
@@ -326,13 +425,14 @@ function setTaskTitleCount() {
 
     titleMsg.innerText = "";
 
-    taskCount = getTaskTitleCount();
+    taskCount = getTaskListCount();
+
     titleMsg.innerText = `Current Tasks (${taskCount})`;
 
     return null;
 }
 
-function getTaskTitleCount() {
+function getTaskListCount() {
 
     let dataset = getDataFromStorage();
     // don't yet have defined the datalayout; return 0
@@ -506,7 +606,7 @@ function swalConfirmTaskDelete(msgStr, taskElement) {
         if (result.isConfirmed) {
             Swal.fire('Deleted!', '', '');
             DeleteTaskByElement(taskElement);
-            displayTaskList();
+            //    displayTaskList();
             returnAns = true;
         } else if (result.isDenied) {
             Swal.fire('Cancelled', '', 'info');
@@ -632,8 +732,9 @@ function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
     }).then((result) => {
         if (result.isConfirmed) {
             if (msgStrPostConfirm != "") {
-                Swal.fire('Complete!', '', 'success');
+                Swal.fire(msgStrPostConfirm, '', 'success');
             }
+
             if (fp_callback != null) {
                 fp_callback();
             }

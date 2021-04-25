@@ -15,6 +15,7 @@
   <!-- 04-21-21 jdj:. adding boxicons cdn for use: site errors: omit this garbage
   <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
 -->
+  <link href="/css/boxicons.min.css" rel="stylesheet">
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -135,7 +136,8 @@
             data-target="#addTask"><b>Create Task</b></button>
         </div> <!-- end of col -->
         <div class="col-6 text-right">
-          <button type="button" class="btn btn-danger btn-outline-dark  mb-2" onclick="tblClearAllTasks()"><b>Delete
+          <button type="button" id="btnDelAll" class="btn btn-danger btn-outline-dark  mb-2"
+            onclick="tblClearAllTasks()"><b>Delete
               All
               Tasks</b></button>
 
@@ -187,6 +189,7 @@
         <button type="button" class="btn btn-sm btn-primary tbl-icon" onclick="tblRowMarkComplete(this)">c</button>
         <button type="button" class="btn btn-sm btn-success tbl-icon" onclick="tblRowEditTask(this)">e</button>
         <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button>
+        <!--      <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button> -->
       </td>
     </tr>
   </template>
