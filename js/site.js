@@ -481,7 +481,7 @@ function tblStoreNewTask(formData) {
         created: new Date(),
         completed: false,
         title: formData.taskNameStr,
-        dueDate: formData.taskDueDateStr
+        dueDate: new Date(`${formData.taskDueDateStr} 00:00`)
     }
     dataSet.push(taskItem);
 
@@ -659,29 +659,13 @@ function swalYesNoPrompt(msgStr) {
  ** 
  ** 
  */
-function formatDateMMDDYYYY(dateString) {
+// function formatDateMMDDYYYY(dateString) {
+function formatDateMMDDYYYY(altdateObj) {
 
+    let dateObj = new Date(altdateObj);
+    let dateStr = dateObj.toLocaleDateString("en-US");
 
-    let dateObj = new Date(dateString);
-
-    let mm = dateObj.getMonth(dateObj);
-    let dd = dateObj.getDay(dateObj);
-    let ccyy = dateObj.getFullYear(dateObj);
-
-
-    if (isNaN(mm) == true) {
-        mm = "00";
-    }
-    if (isNaN(dd) == true) {
-        dd = "00";
-    }
-    if (isNaN(ccyy) == true) {
-        ccyy = "00";
-    }
-
-    let dateStrmmddyy = `${mm}/${dd}/${ccyy}`;
-
-    return dateStrmmddyy;
+    return dateStr;
 
 } // end of formatDateMMDDYYYY()
 
