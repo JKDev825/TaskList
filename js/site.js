@@ -305,7 +305,10 @@ function editTaskDataToForm(rowItem) {
 
     let dbTask = dataSet.find(t => t.id == rowTaskId);
 
-    document.getElementById("editRowTaskID").value = rowTaskId; // place into the hidden field for onclick save.
+    document.getElementById("EditFormTitle").innerHTML = `Update [${dbTask.title}] Item`; // update the form title with the task name.
+
+
+    document.getElementById("editRowTaskID").value = rowTaskId; // place db id into the hidden field for onclick save.
 
     document.getElementById("editTaskName").value = dbTask.title;
     //  form.getElementById("created").textContent = formatDateMMDDYYYY(rowTask.created);
@@ -337,7 +340,9 @@ function editTaskDataToForm(rowItem) {
  */
 function tblRowDeleteTask(rowItem) {
 
-    swalConfirmTaskDelete("Delete this item?", rowItem);
+    let taskName = rowItem.parentElement.parentElement.children[1].innerText;
+
+    swalConfirmTaskDelete(`Delete the [${taskName}] Entry?`, rowItem);
     //  DeleteTaskByElement(rowItem);  testig only
     return null;
 
