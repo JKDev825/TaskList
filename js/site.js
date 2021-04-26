@@ -26,6 +26,27 @@ function onloadEnvInit() {
 
 
 /*
+ ** .filter table controls tblTopFilterxxxx()
+ */
+
+function tblTopFilterCompleted() {
+    alert("filter completed selected");
+    return null;
+}
+
+function tblTopFilterShowAll() {
+    alert("filter showall selected");
+    return null;
+}
+
+function tblTopFilterOverDue() {
+    alert("filter overdue selected");
+    return null;
+}
+
+
+
+/*
  ** .hide the deleta all button if not tasks exist
  ** .cannot confirm through external research the following behavior.
  **
@@ -110,8 +131,6 @@ function tblClearAllTasks() {
         (function () {
             tblClearAllTasksAction();
         }));
-
-    //   showDebugMsg("clearalltasks called: ans to delete ");
 
     return null;
 } /* end of tblClearAllTasks() */
@@ -342,8 +361,14 @@ function tblRowDeleteTask(rowItem) {
 
     let taskName = rowItem.parentElement.parentElement.children[1].innerText;
 
-    swalConfirmTaskDelete(`Delete the [${taskName}] Entry?`, rowItem);
-    //  DeleteTaskByElement(rowItem);  testig only
+    swalYesNoFPCallback(`Delete the [${taskName}] Entry?`, "",
+        (function () {
+            DeleteTaskByElement(rowItem);
+        }));
+
+
+
+
     return null;
 
 } /* end of tblRowDeleteTask() */
@@ -419,21 +444,7 @@ function DeleteTaskByElement(rowItem) {
 function getTaskIdFromElement(currElement) {
 
     let rowTaskId = currElement.parentElement.parentElement.children[0].innerText;
-    let rowDBId = currElement.parentElement.parentElement.children[4].innerText;
-
-
-    let test = currElement.parentNode;
-    let test2 = currElement.parentNode.parentNode;
-    let test5 = test.parentNode;
-    let test3 = currElement.parentElement;
-    let test4 = currElement.parentElement.parentElement;
-    let test6 = test3.parentElement;
-    let test7 = currElement.parentElement.parentElement.children[0].innerText;
-
-    let ptestn1 = currElement.parentNode.parentNode;
-    let pteste1 = currElement.parentNode.parentNode;
-    let ptestnc1 = currElement.parentNode.parentNode.children;
-    let ptestec1 = currElement.parentElement.parentElement.children;
+    //    let rowDBId = currElement.parentElement.parentElement.children[4].innerText;
 
     return rowTaskId;
 }
@@ -614,6 +625,29 @@ function purgeDataStorage() {
     return null;
 } /* end of purgeDataStorage */
 
+
+/*
+ ** .Formats the passed date string into a date object to return a string showwing mm/dd/yyyy
+ ** .The passed string from the initial array or internal storage load shows "mm/dd/yyyy"
+ ** .Strings grabbed from the form input date type show "yyyy/mm/dd"
+ ** .Turn the string into a date object and use the js methods to individually acess the date 
+ **  components to build the current string in a consistent format.
+ ** .use individual date component variables to test individuall for NaN.
+ ** 
+ ** 
+ */
+// function formatDateMMDDYYYY(dateString) {
+function formatDateMMDDYYYY(altdateObj) {
+
+    let dateObj = new Date(altdateObj);
+    let dateStr = dateObj.toLocaleDateString("en-US");
+
+    return dateStr;
+
+} // end of formatDateMMDDYYYY()
+
+
+
 /*
  ** Messaging-Logging functions.  Might extract to separate utility .js in the future
  */
@@ -640,95 +674,6 @@ function showDebugMsg(msgStr) {
 
 
 /*
- ** .When the parent calls sweet alert control isn't returned.
- ** .Decision below swal() is where I'm placing the call.
- ** .Ideally I would create an generic swalyn function and pass it function 
- **  pointers depending on the answer...not time to spend any longer.
- ** .created this confirmdelete spefically to call the js delete task 
- ** function when the user confirms the action.
- **
- */
-function swalConfirmTaskDelete(msgStr, taskElement) {
-    Swal.fire({
-        title: `${msgStr}`,
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: `Yes`,
-        denyButtonText: `No`,
-        customClass: {
-            cancelButton: 'order-1 right-gap',
-            confirmButton: 'order-2',
-            denyButton: 'order-3',
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire('Deleted!', '', '');
-            DeleteTaskByElement(taskElement);
-            //    displayTaskList();
-            returnAns = true;
-        } else if (result.isDenied) {
-            Swal.fire('Cancelled', '', 'info');
-        }
-    })
-}
-
-
-/*
- ** 04-20-21 jdj:.sweet alert cance, yes, no decision.
- ** .css required.  Check for .order???
- */
-function swalYesNoPrompt(msgStr) {
-
-    Swal.fire({
-        title: `${msgStr}`,
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: `Yes`,
-        denyButtonText: `No`,
-        customClass: {
-            cancelButton: 'order-1 right-gap',
-            confirmButton: 'order-2',
-            denyButton: 'order-3',
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire('Complete!', '', 'success');
-            purgeDataStorage();
-            displayTaskList();
-            returnAns = true;
-        } else if (result.isDenied) {
-            Swal.fire('Action Cancelled', '', 'info');
-        }
-    })
-}
-
-
-/*
- **  end of Messaging-Logging functions
- */
-
-/*
- ** .Formats the passed date string into a date object to return a string showwing mm/dd/yyyy
- ** .The passed string from the initial array or internal storage load shows "mm/dd/yyyy"
- ** .Strings grabbed from the form input date type show "yyyy/mm/dd"
- ** .Turn the string into a date object and use the js methods to individually acess the date 
- **  components to build the current string in a consistent format.
- ** .use individual date component variables to test individuall for NaN.
- ** 
- ** 
- */
-// function formatDateMMDDYYYY(dateString) {
-function formatDateMMDDYYYY(altdateObj) {
-
-    let dateObj = new Date(altdateObj);
-    let dateStr = dateObj.toLocaleDateString("en-US");
-
-    return dateStr;
-
-} // end of formatDateMMDDYYYY()
-
-
-/*
  ** .Sweet Alert YNCancel with passed function ptr on Y-confirmed.
  **
  ** .issue: when you call swal you loose control and don't know user's response.
@@ -751,7 +696,7 @@ function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
     Swal.fire({
         title: `${msgStrPrompt}`,
         showDenyButton: true,
-        showCancelButton: true,
+        showCancelButton: false,
         confirmButtonText: `Yes`,
         denyButtonText: `No`,
         customClass: {
@@ -776,6 +721,10 @@ function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
         */
     })
 } /* end of swalYesNowFPCallback */
+
+/*
+ **  end of Messaging-Logging functions
+ */
 
 
 

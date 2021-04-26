@@ -134,16 +134,33 @@
 
       <!-- table header buttons for add and delete all -->
       <div class="row">
-        <div class="col-6">
+        <div class="col-3">
           <button type="button" class="btn btn-info btn-outline-dark mb-2" data-toggle="modal"
             data-target="#addTask"><b>Create Task</b></button>
-        </div> <!-- end of col -->
-        <div class="col-6 text-right">
-          <button type="button" id="btnDelAll" class="btn btn-danger btn-outline-dark  mb-2"
-            onclick="tblClearAllTasks()"><b>Delete
-              All
-              Tasks</b></button>
+        </div> <!-- end of col1 -->
+        <div class="col-5">
 
+        </div>
+        <div class="col-2 text-right pr-1 pt-1">
+          <div class="btn-group btn-group-sm" role="group" aria-label="">
+            <button type="button" class="btn btn-success btn-outline-dark" data-toggle="tootip"
+              title="Show Completed Only" onclick="tblTopFilterCompleted()"><i class="fa fa-check"
+                aria-hidden="true"></i> </button>
+            <button type="button" class="btn btn-info btn-outline-dark" data-toggle="tootip" title="Show all Tasks"
+              onclick="tblTopFilterShowAll()"><i class="fa fa-list" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-outline-dark" data-toggle="tooltip"
+              title="Show Overdue Tasks" onclick="tblTopFilterOverDue(this)"><i class="fa fa-clock-o"
+                aria-hidden="true"></i>
+            </button>
+          </div>
+
+        </div> <!-- end of col3 -->
+
+
+        <div class="col-2 text-right">
+          <button type="button" id="btnDelAll" class="btn btn-danger btn-outline-dark  mb-2"
+            onclick="tblClearAllTasks()"><b>Delete All Tasks</b></button>
         </div> <!-- end of col -->
       </div> <!-- end of row-->
 
@@ -189,12 +206,12 @@
       <td class="d-none" id="db_id" data-id=""></td>
       <td id="icons"></td>
       <td class="btn-group btn-group-sm" role="group" aria-label="">
-        <button type="button" class="btn btn-success" data-toggle="tootip" title="Mark as Completed"
+        <button type="button" class="btn btn-success btn-outline-dark" data-toggle="tootip" title="Mark as Completed"
           onclick="tblRowMarkComplete(this)"><i class="fa fa-check" aria-hidden="true"></i> </button>
-        <button type="button" class="btn btn-info tbl-icon" data-toggle="tootip" title="Change this Item"
-          onclick="tblRowEditTask(this)"><i class="fa fa-pencil" aria-hidden="true"></i>
+        <button type="button" class="btn btn-info tbl-icon btn-outline-dark" data-toggle="tootip"
+          title="Change this Item" onclick="tblRowEditTask(this)"><i class="fa fa-pencil" aria-hidden="true"></i>
         </button>
-        <button type="button" class="btn btn-danger tbl-icon" data-toggle="tooltip" title="Delete this Item"
+        <button type="button" class="btn btn-danger btn-outline-dark" data-toggle="tooltip" title="Delete this Item"
           onclick="tblRowDeleteTask(this)"><i class="fa fa-trash" aria-hidden="true"></i>
         </button>
         <!--      <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button> -->
