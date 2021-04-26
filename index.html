@@ -244,12 +244,13 @@
         </div>
         <div class="modal-body">
           <form id="editTaskForm">
+            <input type="hidden" id="editRowTaskID" name="editTaskID">
             <div class="form-group">
               <label for="editTaskName">Task Name</label>
               <input type="text" class="form-control" id="editTaskName" placeholder="Task Name">
             </div>
             <div class="form-group">
-              <label for="editDueDate">Date</label>
+              <label for="editDueDate">Due Date</label>
               <input type="date" class="form-control" id="editDueDate" pattern="[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"
                 placeholder="mm/dd/ccyy">
             </div>
@@ -257,7 +258,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" onclick="tblEditTask()" data-dismiss="modal">Save</button>
+          <button type="button" class="btn btn-success" onclick="editTaskSave(this)" data-dismiss="modal">Save</button>
         </div>
       </div>
     </div>

@@ -182,13 +182,6 @@ function tblRowMarkComplete(rowItem) {
         return null;
     }
 
-    /*
-    testFP(function () {
-        return testReceiveFP("parm worked too");
-    });
-    return;
-    */
-
     tblRowMarkCompleteAndStore(rowItem);
     return null;
 } /* end of tblRowMarkComplete() */
@@ -232,14 +225,59 @@ function tblRowMarkCompleteAndStore(rowItem) {
     return null;
 } /* end of tblRowMarkComplete */
 
+
+/*
+ ** .from modal form onclick="editTaskSave()"  form id: "editTaskForm"
+ **
+ */
+function editTaskSave(rowItem) {
+    let editFormObj = editTaskFormDataToObj();
+    validateEditTask(editFormObj);
+    if (editFormObj.dataOK == false) {
+        return;
+    }
+
+    let rowTaskId = getTaskIdFromElement(rowItem);
+
+    // store logic here.
+    return null;
+}
+
+function validateEditTask(formData) {
+
+    if (formData.taskNameStr == "") {
+        showErrorMsg("Please enter a Task Name");
+        return formData.dataOK;
+    }
+
+    formData.dataOK = true;
+    return formData.dataOK;
+} /* end of validateNewTask */
+
+
+/*
+ ** .capture new task form data into an object
+ */
+function editTaskFormDataToObj() {
+
+    let editTaskFormData = {
+        TaskIDStr: document.getElementById("editRowTaskID").value,
+        taskNameStr: document.getElementById("editTaskName").value,
+        taskDueDateStr: document.getElementById("editDueDate").value,
+        dataOK: false
+    }
+    return editTaskFormData;
+} /* end of createTaskFormDataToObj */
+
+
 /*
  ** .called from table row control icon to edit update the current task item
  */
 function tblRowEditTask(rowItem) {
 
-    let modal = document.getElementById("editTaskModal");
+    // let modal = document.getElementById("editTaskModal");
 
-    editTaskDataToForm(modal, rowItem);
+    editTaskDataToForm(rowItem);
 
     $('#editTaskModal').modal('show');
     //    modal.style.display = "block";
@@ -251,17 +289,24 @@ function tblRowEditTask(rowItem) {
 /*
  ** .capture new task form data into an object
  */
-function editTaskDataToForm(form, rowItem) {
+function editTaskDataToForm(rowItem) {
 
     /* left off here */
     let dataSet = getDataFromStorage();
     let rowTaskId = getTaskIdFromElement(rowItem);
 
-    let rowTask = dataSet.find(t => t.id == rowTaskId);
+    let dbTask = dataSet.find(t => t.id == rowTaskId);
 
-    form.getElementById("editTaskName").textContent = rowTask.title;
+    document.getElementById("editRowTaskID").value = rowTaskId; // place into the hidden field for onclick save.
+
+    document.getElementById("editTaskName").value = dbTask.title;
     //  form.getElementById("created").textContent = formatDateMMDDYYYY(rowTask.created);
-    form.getElementById("editDueDate").textContent = formatDateMMDDYYYY(rowTask.dueDate);
+
+
+    let shortDate = dbTask.dueDate.split("T")[0];
+
+    document.getElementById("editDueDate").value = shortDate;
+    //  document.getElementById("editDueDate").value = formatDateMMDDYYYY(dbTask.dueDate);
     //  form.getElementById("db_id").textContent = rowTask.id;
 
     return null;
@@ -669,18 +714,6 @@ function formatDateMMDDYYYY(altdateObj) {
 
 } // end of formatDateMMDDYYYY()
 
-
-
-
-function testFP(fpvar) {
-
-    fpvar();
-
-}
-
-function testReceiveFP(msg) {
-    alert(msg);
-}
 
 /*
  ** .Sweet Alert YNCancel with passed function ptr on Y-confirmed.
