@@ -237,7 +237,15 @@ function editTaskSave(rowItem) {
         return;
     }
 
-    let rowTaskId = getTaskIdFromElement(rowItem);
+    let dataSet = getDataFromStorage();
+    let dbTask = dataSet.find(t => t.id == editFormObj.TaskIDStr);
+
+    // so dbTask is a direct pointer into the array.  Change items directly and store the whole array.
+    dbTask.title = editFormObj.taskNameStr;
+    dbTask.dueDate = new Date(`${editFormObj.taskDueDateStr} 00:00`);
+
+    putDataToStorage(dataSet);
+    displayTaskList();
 
     // store logic here.
     return null;
