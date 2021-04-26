@@ -188,10 +188,15 @@
       <td id="dueDate"></td>
       <td class="d-none" id="db_id" data-id=""></td>
       <td id="icons"></td>
-      <td class="btn-group" role="group" aria-label="">
-        <button type="button" class="btn btn-sm btn-primary tbl-icon" onclick="tblRowMarkComplete(this)">c</button>
-        <button type="button" class="btn btn-sm btn-success tbl-icon" onclick="tblRowEditTask(this)">e</button>
-        <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button>
+      <td class="btn-group btn-group-sm" role="group" aria-label="">
+        <button type="button" class="btn btn-success" onclick="tblRowMarkComplete(this)"><i class="fa fa-check"
+            aria-hidden="true"></i> </button>
+        <button type="button" class="btn btn-primary tbl-icon" onclick="tblRowEditTask(this)"><i class="fa fa-pencil"
+            aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn btn-danger tbl-icon" onclick="tblRowDeleteTask(this)"><i class="fa fa-trash"
+            aria-hidden="true"></i>
+        </button>
         <!--      <button type="button" class="btn btn-sm btn-danger tbl-icon" onclick="tblRowDeleteTask(this)">x</button> -->
       </td>
     </tr>

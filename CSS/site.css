@@ -464,3 +464,8 @@ tr.completed>td:nth-child(-n+4) {
 .mobile-nav-active .mobile-nav-toggle i {
   color: #fff;
 }
+
+/* 04-25-21 jdj: size the font awesome icons. */
+.fa {
+  font-size: 12px;
+}
