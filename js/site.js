@@ -40,7 +40,7 @@ function tblTopFilterCompleted() {
         return;
     }
 
-    displayTaskListDataset(onlyCompletedTasks);
+    displayTaskListDataset(onlyCompletedTasks, "Completed");
 
     return null;
 } /* end of tblTopFilterCompleted() */
@@ -64,7 +64,7 @@ function tblTopFilterOverDue() {
         return;
     }
 
-    displayTaskListDataset(onlyOverDueTasks);
+    displayTaskListDataset(onlyOverDueTasks, "Overdue");
 
     return null;
 } /* end of tblTopFilterOverDue() */
@@ -503,7 +503,7 @@ function displayTaskList() {
 
     let dataSet = getDataFromStorage();
 
-    displayTaskListDataset(dataSet);
+    displayTaskListDataset(dataSet, "");
 
     return null;
 }
@@ -512,13 +512,13 @@ function displayTaskList() {
 /*
  ** .called from apptodo.html table head button.
  */
-function displayTaskListDataset(dataSet) {
+function displayTaskListDataset(dataSet, filteredTitlemsg) {
     const template = document.getElementById("TaskList-Table-Template");
     const resultsBody = document.getElementById("resultsBody");
 
     //  let dataSet = getDataFromStorage();
 
-    setTaskTitleCount(dataSet);
+    setTaskTitleCount(dataSet, filteredTitlemsg);
     setDeleteAllButtonDisplay();
 
     resultsBody.innerHTML = "";
@@ -556,12 +556,26 @@ function displayTaskListDataset(dataSet) {
 /*
  ** .Set the title msg at the top of the table with the total entries found.
  */
-function setTaskTitleCount(dataSet) {
+function setTaskTitleCount(dataSet, filteredMsg) {
 
     let titleMsg = document.getElementById("TasksTitleCount");
     let taskCount = dataSet.length;
 
-    titleMsg.innerText = `Current Tasks (${taskCount})`;
+
+    /*
+     ** .make the title count a bit more coherent relative to filtered
+     **  and unfiltered displays.
+     ** .For filtered msgs the passed "filteredMsg" prompt will have a value 
+     **  and the title will say "Current Tasks () msg"
+     ** .When "filteredMsg" is empty it means the full dataset is being
+     **  display and we'll show "All Tasks...."
+     */
+    let titlePfxMsg = "Current";
+    if (filteredMsg == "") {
+        titlePfxMsg = "All";
+    }
+
+    titleMsg.innerText = `${titlePfxMsg} Tasks (${taskCount}) ${filteredMsg}`;
 
     return null;
 }
