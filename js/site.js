@@ -30,17 +30,42 @@ function onloadEnvInit() {
  */
 
 function tblTopFilterCompleted() {
-    alert("filter completed selected");
+
+    let dataSet = getDataFromStorage();
+
+    let onlyCompletedTasks = dataSet.filter(t => t.completed == true);
+
+    if (onlyCompletedTasks.length == 0) {
+        showInfoMsg("I'm afraid no tasks were found as completed yet.");
+        return;
+    }
+
+    displayTaskListDataset(onlyCompletedTasks);
+
     return null;
 }
 
 function tblTopFilterShowAll() {
-    alert("filter showall selected");
+
+    displayTaskList(); // show them all
+
     return null;
 }
 
 function tblTopFilterOverDue() {
-    alert("filter overdue selected");
+
+    let dataSet = getDataFromStorage();
+
+    // this will included today's date but I think that's fine for user awareness.
+    let onlyOverDueTasks = dataSet.filter(t => Date.parse(t.dueDate) < new Date());
+
+    if (onlyOverDueTasks.length == 0) {
+        showInfoMsg("No tasks were found as overdue.");
+        return;
+    }
+
+    displayTaskListDataset(onlyOverDueTasks);
+
     return null;
 }
 
@@ -123,8 +148,19 @@ function tblClearAllTasks() {
     let taskCount = getTaskListCount();
     let msgPrompt = "Delete Task?";
 
+    /*
+     ** .Note: Consider the table display might be filtered at this point with only tasks
+     **  showing either completed or overdue.
+     ** 
+     ** .Purpose of this logic is to destroy all stored data.
+     ** .To avoid user confusion call to redisplay the full task list before the prompt
+     **  to nuke their data so it's visible.
+     */
+
+    displayTaskList();
+
     if (taskCount > 1) {
-        msgPrompt = `Delete All ${taskCount} Tasks?`
+        msgPrompt = `Delete All ${taskCount} Tasks in Storage?`
     }
 
     swalYesNoFPCallback(msgPrompt, "Task(s) Deleted",
@@ -193,8 +229,10 @@ function tblClearAllTasksAction() {
  */
 function tblRowMarkComplete(rowItem) {
 
+    let taskName = rowItem.parentElement.parentElement.children[1].innerText;
+
     if (isTblRowMarkComplete(rowItem) == true) {
-        swalYesNoFPCallback("Would You Like to unmark this item?", "",
+        swalYesNoFPCallback(`Would you like to unmark the\n[${taskName}]\n item?`, "",
             (function () {
                 tblRowMarkCompleteAndStore(rowItem);
             }));
@@ -361,7 +399,7 @@ function tblRowDeleteTask(rowItem) {
 
     let taskName = rowItem.parentElement.parentElement.children[1].innerText;
 
-    swalYesNoFPCallback(`Delete the [${taskName}] Entry?`, "",
+    swalYesNoFPCallback(`Delete the\n [${taskName}]\n Entry?`, "",
         (function () {
             DeleteTaskByElement(rowItem);
         }));
@@ -449,16 +487,39 @@ function getTaskIdFromElement(currElement) {
     return rowTaskId;
 }
 
+
 /*
- ** .called from apptodo.html table head button.
+ **
+ ** .Data Display Routines
+ ** .Core routine is displayTaskListDataset(dataarray) which requires the datset passed.
+ ** .cover function displayTaskList() was created to allow parent level functions to easily
+ **  call without grabbing data from disk.
+ ** .dataset filter logic is also needed for the table header buttons to 
+ **  provide a filtered data display to the core routine.
+ **
  */
+
+
 function displayTaskList() {
-    const template = document.getElementById("TaskList-Table-Template");
-    const resultsBody = document.getElementById("resultsBody");
 
     let dataSet = getDataFromStorage();
 
-    setTaskTitleCount();
+    displayTaskListDataset(dataSet);
+
+    return null;
+}
+/* end of displayTaskList()
+
+/*
+ ** .called from apptodo.html table head button.
+ */
+function displayTaskListDataset(dataSet) {
+    const template = document.getElementById("TaskList-Table-Template");
+    const resultsBody = document.getElementById("resultsBody");
+
+    //  let dataSet = getDataFromStorage();
+
+    setTaskTitleCount(dataSet);
     setDeleteAllButtonDisplay();
 
     resultsBody.innerHTML = "";
@@ -466,11 +527,10 @@ function displayTaskList() {
     for (let x = 0; x < dataSet.length; x++) {
         let dataRow = document.importNode(template.content, true);
 
-        /* throwing an error. */
+
         if (dataSet[x].completed == true) {
             dataRow.getElementById("TaskListRow").setAttribute("class", "completed");
         }
-        /* */
 
         dataRow.getElementById("title").textContent = dataSet[x].title;
         dataRow.getElementById("created").textContent = formatDateMMDDYYYY(dataSet[x].created);
@@ -480,7 +540,6 @@ function displayTaskList() {
 
         resultsBody.appendChild(dataRow);
 
-
     }
 
     return null;
@@ -488,13 +547,20 @@ function displayTaskList() {
 } /* end of displaytaskList */
 
 
-function setTaskTitleCount() {
+/*
+ **
+ ** .Data Display Routines
+ **
+ **
+ */
+
+/*
+ ** .Set the title msg at the top of the table with the total entries found.
+ */
+function setTaskTitleCount(dataSet) {
+
     let titleMsg = document.getElementById("TasksTitleCount");
-    let taskCount = 0;
-
-    titleMsg.innerText = "";
-
-    taskCount = getTaskListCount();
+    let taskCount = dataSet.length;
 
     titleMsg.innerText = `Current Tasks (${taskCount})`;
 
@@ -652,18 +718,24 @@ function formatDateMMDDYYYY(altdateObj) {
  ** Messaging-Logging functions.  Might extract to separate utility .js in the future
  */
 function showErrorMsg(errMsgStr) {
-    //   alert(errMsgStr);
-    //   alert("windows alert is temporary until I can debug sweetalert");
-
 
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        /*    html: `<ol>${errorMessage}</ol>`, */
         html: `${errMsgStr}`,
     })
 
 } /* end of showErrorMsg() */
+
+function showInfoMsg(infoMsgStr) {
+
+    Swal.fire({
+        icon: 'info',
+        title: 'fyi...',
+        html: `${infoMsgStr}`,
+    })
+
+} /* end of showInfoMsg() */
 
 
 function showDebugMsg(msgStr) {
