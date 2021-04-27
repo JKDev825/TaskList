@@ -160,7 +160,7 @@ function tblClearAllTasks() {
     displayTaskList();
 
     if (taskCount > 1) {
-        msgPrompt = `Delete All ${taskCount} Tasks in Storage?`
+        msgPrompt = `Delete All ${taskCount} Tasks that are Stored?`
     }
 
     swalYesNoFPCallback(msgPrompt, "Task(s) Deleted",
@@ -232,7 +232,7 @@ function tblRowMarkComplete(rowItem) {
     let taskName = rowItem.parentElement.parentElement.children[1].innerText;
 
     if (isTblRowMarkComplete(rowItem) == true) {
-        swalYesNoFPCallback(`Would you like to unmark the\n[${taskName}]\n item?`, "",
+        swalYesNoFPCallback(`Would you like to unmark the\n[${taskName}]\n entry?`, "",
             (function () {
                 tblRowMarkCompleteAndStore(rowItem);
             }));
@@ -401,7 +401,7 @@ function tblRowDeleteTask(rowItem) {
 
     let taskName = rowItem.parentElement.parentElement.children[1].innerText;
 
-    swalYesNoFPCallback(`Delete the\n [${taskName}]\n Entry?`, "",
+    swalYesNoFPCallback(`Delete the\n [${taskName}]\n entry?`, "",
         (function () {
             DeleteTaskByElement(rowItem);
         }));
