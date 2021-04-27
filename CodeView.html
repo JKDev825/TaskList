@@ -76,10 +76,12 @@
         <!--        <div class="col mt-1 border border-dark rounded shadow-lg"> -->
         <div class="col mt-1 rounded shadow-lg">
           <h2 class="text-center">JavaScript Code Review</h2>
-          <h6> <b>The application leverages an HTML template to build the main data display. It also dynamically builds
-              the contents for a dropdown menu that allows the user to filter statistics by location. Dataset
-              initialization, table and statistics displays, and the dropdown menu build are accomplished upon javascript
-              load and HTML body onload= events. I welcome any questions you may have regarding the source code below.
+          <h6> <b>The application illustrates change, read, update and delete (CRUD) capabilities. The dataset is
+              created as a JavaScript object and stored as JSON. Individual table entries can be marked as complete,
+              updated or deleted. Supporting user feedback leverages the sweetalert2 CDN/js and proprietary logic
+              created to use
+              JavaScript anonymous functions to represent function pointer callbacks to simplify use by the application
+              layer.
             </b></h6>
           <h5 class="text-md-center"><b>The full application was written using HTML, JavaScript, jQuery, CSS, and
               Bootstrap v4.
@@ -97,15 +99,19 @@
               <ul class="nav nav-pills card-header-tabs bg-dark" id="source-list" role="tablist">
                 <li class="nav-item">
                   <a class="nav-link active" id="tab-src1" data-toggle="tab" href="#source-1" role="tab"
-                    aria-controls="instructions" aria-selected="true"><b>Data</b></a>
+                    aria-controls="instructions" aria-selected="true"><b>DataAccess</b></a>
                 </li>
                 <li class="nav-item ">
                   <a class="nav-link" id="tab-src2" data-toggle="tab" href="#source-2" role="tab"
-                    aria-controls="instruction-card2" aria-selected="false"><b>DropdownMenu</b></a>
+                    aria-controls="instruction-card2" aria-selected="false"><b>DataDisplays</b></a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" id="tab-src3" data-toggle="tab" href="#source-3" role="tab"
-                    aria-controls="event-details" aria-selected="false">DataUpdates</a>
+                    aria-controls="event-details" aria-selected="false">FormControls</a>
+                </li>
+                <li class="nav-item ">
+                  <a class="nav-link" id="tab-src4" data-toggle="tab" href="#source-4" role="tab"
+                    aria-controls="instruction-card2" aria-selected="false"><b>UserFeedback</b></a>
                 </li>
               </ul>
             </div>
@@ -114,114 +120,167 @@
 
               <div class="tab-content mt-3">
                 <div class="tab-pane active" id="source-1" role="tabpanel">
-                  <h6 class="card-title">Data access functions to isolate JSON calls. Initial data display from a static
-                    object array. Local storage is used thereafter for updates. </h5>
+                  <h6 class="card-title">
+                    </h5>
                     <div class="col-12 line-numbers">
                       <pre><code class="language-javascript">/*
-** .js entry point.
-** .get initial dataset.
-** .set the filteredEvents[] array for stats display.
-** .display the full dataset.
-*/
-function loadEventData() {
-
-    eventData = initGetEventData();
-
-    setFilteredEvents("All"); /* initialize filterEvents[] array for 1st time load of stats table */
-    displayStats();
-    displayEventData(eventData);
-
-    return null;
-} /* end of loadEventData() */
-
-/*
  ** Data Access Routines:
  **
- ** .Application calls will use getEventData() and putEventData() for access.
+ ** .Application calls will use getSDataFromStorage() and putDataToStorage() for access.
  ** .consolidate logic for JSON storage to omit multiple application references.
  ** .this allows for flexibility in replacing the data access layer if needed.
- ** .this exercise excludes error handling but this is where it would be included.
+ ** .isolate the occurence of the dataset name into a single function.
  ** 
  ** .Note: the static array and storage share the same name "eventArray"
  */
-function getEventDataFromStorage(createNewFromArray) {
 
-    let eventData = "";
+function getDataStorageName() {
+    let datasetName = "todolistapp";
+    return datasetName;
+}
 
-    if (createNewFromArray == true) {
-        eventData = JSON.parse(localStorage.getItem("eventArray")) || [];
-    } else {
-        eventData = JSON.parse(localStorage.getItem("eventArray")) || eventArray;
-    }
 
-    return eventData;
+function getDataFromStorage() {
 
-} /* end of getEventDataFromStorage */
+    /*
+     ** .return the existing datastore or an empty array if it doesn't exist.
+     ** .error handling wasn't discussed at this point.  Might be assumed to always work.
+     ** .if there are errors then perhaps the system has larger file system problems.
+     */
+    let dataSet = JSON.parse(localStorage.getItem(getDataStorageName())) || [];
 
-function putEventData(dataSet) {
+    return dataSet;
+
+} /* end of getDataFromStorage */
+
+function putDataToStorage(dataSet) {
 
     /**
      ** .future lessons yet to be had regarding error i/o handling best practices
      ** .error logic would be added to respective data access errors.
      */
-    localStorage.setItem("eventArray", JSON.stringify(dataSet));
+    localStorage.setItem(getDataStorageName(), JSON.stringify(dataSet));
 
     return true;
 
-} /* end of putEventData() */
- */</code></pre>
+} /* end of putDataToStorage */
+
+/*
+ ** .this nukes all storage.  Caller is responsible for user prompts.
+ */
+function purgeDataStorage() {
+    localStorage.setItem(getDataStorageName(), JSON.stringify([]));
+    return null;
+} /* end of purgeDataStorage */
+
+/</code></pre>
                     </div>
                 </div>
 
                 <div class="tab-pane fade" id="source-2" role="tabpanel" aria-labelledby="instruction-card2">
-                  <h6 class="card-title">The drop down menu lists unique locations from the full dataset. It filters
-                    by location and builds the HTML and callback into the JavaScript using onclick=getEvent().
-                  </h6>
+                  <h6 class="card-title"> </h6>
 
                   <div class="container">
                     <div class="row stats-row">
                       <div class="col line-numbers">
                         <pre><code class="language-javascript">/*
- ** .HTML entry point from body tage onload=buildDropDown()
- ** .controls build of the drop down menu for location selections.
- ** .Update the statistics and full datset displays.
+ ** .filter table controls tblTopFilterxxxx()
  */
-function buildDropDown() {
-    buildDropDownMenu(); // build city drop down list
-    updateEventDataDisplays();
+
+function tblTopFilterCompleted() {
+
+    let dataSet = getDataFromStorage();
+
+    let onlyCompletedTasks = dataSet.filter(t => t.completed == true);
+
+    if (onlyCompletedTasks.length == 0) {
+        showInfoMsg("I'm afraid no tasks were found as completed yet.");
+        return;
+    }
+
+    displayTaskListDataset(onlyCompletedTasks);
+
     return null;
-} /* end of buildDropDown() */
+} /* end of tblTopFilterCompleted() */
+
+function tblTopFilterShowAll() {
+
+    displayTaskList(); // show them all
+
+    return null;
+} /* end of tblTopFilterShowAll() */
+
+function tblTopFilterOverDue() {
+
+    let dataSet = getDataFromStorage();
+
+    // this will included today's date but I think that's fine for user awareness.
+    let onlyOverDueTasks = dataSet.filter(t => Date.parse(t.dueDate) < new Date());
+
+    if (onlyOverDueTasks.length == 0) {
+        showInfoMsg("No tasks were found as overdue.");
+        return;
+    }
+
+    displayTaskListDataset(onlyOverDueTasks);
+
+    return null;
+} /* end of tblTopFilterOverDue() */
+/*
+ **
+ ** .Data Display Routines
+ ** .Core routine is displayTaskListDataset(dataarray) which requires the datset passed.
+ ** .cover function displayTaskList() was created to allow parent level functions to easily
+ **  call without grabbing data from disk.
+ ** .dataset filter logic exists at a parent level who call the core routine
+ **  with the modified dataset.
+ */
+function displayTaskList() {
+
+    let dataSet = getDataFromStorage();
+
+    displayTaskListDataset(dataSet);
+
+    return null;
+}
+/* end of displayTaskList()
 
 /*
- ** .create location drop down menu for statistics
- ** .takes a copy of the current data table
- ** .creates a new array with just a list of distinct city names.
- ** .builds the line level html with onclick=getEvent to allow a location specific selection and refresh
- ** .ending html that includes all locations.
+ ** .called from apptodo.html table head button.
  */
-function buildDropDownMenu() {
-    let eventDD = document.getElementById("eventDropDown");
-    let eventDataList = getEventData(); /* get the list from disk or the static array at the top */
+function displayTaskListDataset(dataSet) {
+    const template = document.getElementById("TaskList-Table-Template");
+    const resultsBody = document.getElementById("resultsBody");
 
-    /*   let distinctEvents = [...new Set(eventArray.map((eventArray) => eventArray.city))]; */
-    let distinctEvents = [...new Set(eventDataList.map((eventDataList) => eventDataList.city))];
+    //  let dataSet = getDataFromStorage();
+
+    setTaskTitleCount(dataSet);
+    setDeleteAllButtonDisplay();
+
+    resultsBody.innerHTML = "";
+
+    for (let x = 0; x < dataSet.length; x++) {
+        let dataRow = document.importNode(template.content, true);
 
 
-    /* builds the html for the drop down list and callback to getEvents() using onclick() for each location displayed */
-    let linkHTMLEnd =
-        '[div class="dropdown-divider"][/div][a class="dropdown-item" onclick="getEvents(this)" data-string="All"]All[a]';""
+        if (dataSet[x].completed == true) {
+            dataRow.getElementById("TaskListRow").setAttribute("class", "completed");
+        }
 
-    let resultHTML = "";
+        dataRow.getElementById("title").textContent = dataSet[x].title;
+        dataRow.getElementById("created").textContent = formatDateMMDDYYYY(dataSet[x].created);
+        dataRow.getElementById("dueDate").textContent = formatDateMMDDYYYY(dataSet[x].dueDate);
+        dataRow.getElementById("taskid").textContent = dataSet[x].id;
+        dataRow.getElementById("db_id").textContent = dataSet[x].id;
 
-    for (let i = 0; i < distinctEvents.length; i++) {
-        resultHTML += `[a class="dropdown-item" onclick="getEvents(this)" data-string="${distinctEvents[i]}">${distinctEvents[i]}[/a]`;
+        resultsBody.appendChild(dataRow);
+
     }
-    resultHTML += linkHTMLEnd;
-    eventDD.innerHTML = resultHTML;
 
     return null;
 
-} /* end of buildDropDownMenu */
+} /* end of displaytaskList */
+
 </code></pre>
 
                       </div>
@@ -230,89 +289,230 @@ function buildDropDownMenu() {
                 </div>
 
                 <div class="tab-pane fade" id="source-3" role="tabpanel" aria-labelledby="deals-tab">
-                  <h6 class="card-title">An HTML form class was used to collect new event data. New data is appended
-                    onto the existing dataset. Logic was written to inspect the entered location against the existing
-                    location statistics table display. If they are the same the location specific values display is
-                    updated upon save. New locations will be added to the next dropdown menu and total statistics
-                    updated.</h5>
+                  <h6 class="card-title">
+                    </h5>
 
                     <div class="container">
                       <div class="row stats-row">
                         <div class="col line-numbers">
-                        <pre><code class="language-javascript">
-/*
- ** .user save new event form.
- ** .form validation is NOT being applied for this exercise.
- ** .grab the current dataset
- ** .build a new object with the form contents and push onto the dataset and save.
- ** .check if the current display stats header location matches the new form data.
- ** .if it does update the stats window with the new data totals
- ** .Also update the totals display if current on "All"
- ** .rebuild the dropdown and update all displays.
+                          <pre><code class="language-javascript">/*
+ ** .add a new task to the dataset.
+ ** .called from table header button
  */
-function saveEventFormData() {
+function tblCreateTask(formData) {
+    let newTaskFormObj = createTaskFormDataToObj();
 
-    /* let eventData = JSON.parse(localStorage.getItem("eventArray")) || eventArray; */
-    let eventData = getEventData(); /* get the current data set */
-    let formCityName = "";
-    let obj = {};
-
-    obj["event"] = document.getElementById("newEvent").value;
-    obj["city"] = document.getElementById("newCity").value;
-    obj["state"] = document.getElementById("newState").value;
-    obj["attendance"] = parseInt(document.getElementById("newAttendance").value, 10);
-    obj["date"] = document.getElementById("newDate").value;
-
-    eventData.push(obj);
-
-    /* localStorage.setItem("eventArray", JSON.stringify(eventData)); replaced with putEventData() */
-    putEventData(eventData);
-
-    let hdrCityStr = document.getElementById("statsHeader").innerHTML;
-    hdrCityStr = normalizeString(hdrCityStr);
-    hdrCityStr = hdrCityStr.replace("STATSFOR", "");
-    hdrCityStr = hdrCityStr.replace("EVENTS", "");
-
-    formCityName = obj["city"];
-    if (compareStringsTheSame(normalizeString(formCityName), hdrCityStr) == true || hdrCityStr == "ALL") {
-
-        if (hdrCityStr == "ALL") {
-            setFilteredEvents("All"); /* update filteredEvents[] for displaystats() */
-        } else {
-            setFilteredEvents(formCityName); /* update filteredEvents[] for displaystats() */
-        }
+    validateNewTask(newTaskFormObj);
+    if (newTaskFormObj.dataOK == false) {
+        return;
     }
+    tblStoreNewTask(newTaskFormObj);
 
-
-    buildDropDown(); /* update dropdown menu to included the new dataset entry if unuique. */
-    updateEventDataDisplays(); /* update the stats and main table data displays */
-    document.getElementById("newAEventForm").reset(); /* reset the contents of the form */
-    return null;
-} /* end of saveEventData() */
-
+    displayTaskList();
+} /* end of tblCreateTask */
 /*
-** .update the global filteredEvents[] array with the location string passed.
+** Basic edits. Allow an empty date for the user to update afterwards.
 */
-function setFilteredEvents(matchCityName) {
-let curEvents = getEventData(); /* get the current data set */
+function validateEditTask(formData) {
 
-filteredEvents = curEvents;
-if (matchCityName != "All") {
-//Explain how array filtering works-
-filteredEvents = curEvents.filter(function (item) {
-if (item.city == matchCityName) {
-return item;
+if (formData.taskNameStr == "") {
+showErrorMsg("Please enter a Task Name");
+return formData.dataOK;
 }
-});
+
+formData.dataOK = true;
+return formData.dataOK;
+} /* end of validateNewTask */
+/*
+** .use the form object to add the task to the dataset.
+** .create a unique id (guid), store current date, due date and task title
+*/
+function tblStoreNewTask(formData) {
+// showDebugMsg("createtask called");
+
+let dataSet = getDataFromStorage();
+
+
+// task object definition
+let taskItem = {
+id: createUniqueTaskId(),
+created: new Date(),
+completed: false,
+title: formData.taskNameStr,
+dueDate: new Date(`${formData.taskDueDateStr} 00:00`)
 }
+dataSet.push(taskItem);
+
+putDataToStorage(dataSet);
+return taskItem;
+} /* end of tablStoreTask */
+/*
+** .called from table row control icon to edit update the current task item
+*/
+function tblRowEditTask(rowItem) {
+
+// let modal = document.getElementById("editTaskModal");
+
+editTaskDataToForm(rowItem);
+
+$('#editTaskModal').modal('show');
+// modal.style.display = "block";
+
 return null;
-} /* end of setFilteredEvents() */
+} /* end of tblRowMarkComplete */
+/*
+** .capture new task form data into an object
+*/
+function editTaskDataToForm(rowItem) {
+
+/* left off here */
+let dataSet = getDataFromStorage();
+let rowTaskId = getTaskIdFromElement(rowItem);
+
+let dbTask = dataSet.find(t => t.id == rowTaskId);
+
+document.getElementById("EditFormTitle").innerHTML = `Update [${dbTask.title}] Item`; // update the form title with the
+task name.
+
+
+document.getElementById("editRowTaskID").value = rowTaskId; // place db id into the hidden field for onclick save.
+
+document.getElementById("editTaskName").value = dbTask.title;
+// form.getElementById("created").textContent = formatDateMMDDYYYY(rowTask.created);
+
+
+let shortDate = dbTask.dueDate.split("T")[0];
+
+document.getElementById("editDueDate").value = shortDate;
+// document.getElementById("editDueDate").value = formatDateMMDDYYYY(dbTask.dueDate);
+// form.getElementById("db_id").textContent = rowTask.id;
+
+return null;
+} /* end of editTaskFormDataToObj */
+/*
+** .from modal form onclick="editTaskSave()" form id: "editTaskForm"
+*/
+function editTaskSave(rowItem) {
+let editFormObj = editTaskFormDataToObj();
+validateEditTask(editFormObj);
+if (editFormObj.dataOK == false) {
+return;
+}
+
+let dataSet = getDataFromStorage();
+let dbTask = dataSet.find(t => t.id == editFormObj.TaskIDStr);
+
+// so dbTask is a direct pointer into the array. Change items directly and store the whole array.
+dbTask.title = editFormObj.taskNameStr;
+dbTask.dueDate = new Date(`${editFormObj.taskDueDateStr} 00:00`);
+
+putDataToStorage(dataSet);
+displayTaskList();
+
+// store logic here.
+return null;
+}
+/*
+** Basic edits. Allow an empty date for the user to update afterwards.
+*/
+function validateEditTask(formData) {
+
+if (formData.taskNameStr == "") {
+showErrorMsg("Please enter a Task Name");
+return formData.dataOK;
+}
+
+formData.dataOK = true;
+return formData.dataOK;
+} /* end of validateNewTask */
+
 </code></pre>
 
-</div>                      
-</div> <!-- end of row -->
+                        </div>
+                      </div> <!-- end of row -->
                     </div>
-                </div>
+                </div> <!-- end of tab pane-->
+                <div class="tab-pane fade" id="source-4" role="tabpanel" aria-labelledby="deals-tab">
+                  <h5 class="card-title">JavaScript anonymous function example. One example parent call and the
+                    sweetalert2 logic leveraging the passed function as a variable. </h5>
+
+                  <div class="container">
+                    <div class="row stats-row">
+                      <div class="col line-numbers">
+                        <pre><code class="language-javascript">/*
+ ** .This will be called from html.  
+ ** .It will call swal to prompt and if yes the callback
+ **  to tblRowMarkCompleteCallback(rowItem) will happen.
+ **
+ ** .Now, logic to set "completed" on a task.
+ ** .if the task is not completed then mark complete and return; no user prompt.
+ ** .if the task is already marked prompt the user first to unmark it.
+ **
+ **
+ */
+function tblRowMarkComplete(rowItem) {
+
+    let taskName = rowItem.parentElement.parentElement.children[1].innerText;
+
+    if (isTblRowMarkComplete(rowItem) == true) {
+        swalYesNoFPCallback(`Would you like to unmark the\n[${taskName}]\n item?`, "",
+            (function () {
+                tblRowMarkCompleteAndStore(rowItem);
+            }));
+        return null;
+    }
+
+    tblRowMarkCompleteAndStore(rowItem);
+    return null;
+} /* end of tblRowMarkComplete() */
+/*
+ ** swalYesNoFPCallback(msg prompt, post confirm msg, function pointer)
+ **    .msg prompt = used to prompt the user for their y/n response
+ **    .post confirm msg = after yes a last "success" msg is dislayed.  If empty "" no post msg.
+ **    .fp_callback = function pointer that will be called if the user selects Yes.
+ **
+ ** Parent call for function pointer.  Use an anonymous function which can include parameters.
+ ** i.e: swalYesNoFPCallback("are you sure?", "action worked", function() { return funcname(parm1, parm2, etc);});
+ ** .if yes is selected the "funcname(parm1, parm2, etc)" will be called.
+ **
+ **
+ */
+function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
+    Swal.fire({
+        title: `${msgStrPrompt}`,
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: `Yes`,
+        denyButtonText: `No`,
+        customClass: {
+            cancelButton: 'order-1 right-gap',
+            confirmButton: 'order-2',
+            denyButton: 'order-3',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (msgStrPostConfirm != "") {
+                Swal.fire(msgStrPostConfirm, '', 'success');
+            }
+
+            if (fp_callback != null) {
+                fp_callback();
+            }
+        }
+        /* omit the 2ndary notification on cancel; annoying
+        else if (result.isDenied) {
+            Swal.fire('Cancelled', '', 'info');
+        }
+        */
+    })
+} /* end of swalYesNoFPCallback */
+
+</code></pre>
+
+                      </div> <!-- end of col -->
+                    </div> <!-- end of row -->
+                  </div> <!-- end of source-x container -->
+                </div> <!-- end of source-x tab pane -->
               </div>
             </div>
           </div> <!-- card class end -->

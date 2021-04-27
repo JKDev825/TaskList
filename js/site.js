@@ -43,14 +43,14 @@ function tblTopFilterCompleted() {
     displayTaskListDataset(onlyCompletedTasks);
 
     return null;
-}
+} /* end of tblTopFilterCompleted() */
 
 function tblTopFilterShowAll() {
 
     displayTaskList(); // show them all
 
     return null;
-}
+} /* end of tblTopFilterShowAll() */
 
 function tblTopFilterOverDue() {
 
@@ -67,7 +67,7 @@ function tblTopFilterOverDue() {
     displayTaskListDataset(onlyOverDueTasks);
 
     return null;
-}
+} /* end of tblTopFilterOverDue() */
 
 
 
@@ -285,7 +285,6 @@ function tblRowMarkCompleteAndStore(rowItem) {
 
 /*
  ** .from modal form onclick="editTaskSave()"  form id: "editTaskForm"
- **
  */
 function editTaskSave(rowItem) {
     let editFormObj = editTaskFormDataToObj();
@@ -308,6 +307,9 @@ function editTaskSave(rowItem) {
     return null;
 }
 
+/*
+ ** Basic edits.  Allow an empty date for the user to update afterwards.
+ */
 function validateEditTask(formData) {
 
     if (formData.taskNameStr == "") {
@@ -378,7 +380,7 @@ function editTaskDataToForm(rowItem) {
     //  form.getElementById("db_id").textContent = rowTask.id;
 
     return null;
-} /* end of createTaskFormDataToObj */
+} /* end of editTaskFormDataToObj */
 
 
 
@@ -494,12 +496,9 @@ function getTaskIdFromElement(currElement) {
  ** .Core routine is displayTaskListDataset(dataarray) which requires the datset passed.
  ** .cover function displayTaskList() was created to allow parent level functions to easily
  **  call without grabbing data from disk.
- ** .dataset filter logic is also needed for the table header buttons to 
- **  provide a filtered data display to the core routine.
- **
+ ** .dataset filter logic exists at a parent level who call the core routine
+ **  with the modified dataset.
  */
-
-
 function displayTaskList() {
 
     let dataSet = getDataFromStorage();
@@ -603,7 +602,10 @@ function createTaskFormDataToObj() {
 } /* end of createTaskFormDataToObj */
 
 
-
+/*
+ ** .use the form object to add the task to the dataset.
+ ** .create a unique id (guid), store current date, due date and task title
+ */
 function tblStoreNewTask(formData) {
     //  showDebugMsg("createtask called");
 
@@ -758,7 +760,7 @@ function showDebugMsg(msgStr) {
  **    .post confirm msg = after yes a last "success" msg is dislayed.  If empty "" no post msg.
  **    .fp_callback = function pointer that will be called if the user selects Yes.
  **
- ** Parent call for function pointer.  The use an anonymous function which can include parameters.
+ ** Parent call for function pointer.  Use an anonymous function which can include parameters.
  ** i.e: swalYesNoFPCallback("are you sure?", "action worked", function() { return funcname(parm1, parm2, etc);});
  ** .if yes is selected the "funcname(parm1, parm2, etc)" will be called.
  **
@@ -792,7 +794,7 @@ function swalYesNoFPCallback(msgStrPrompt, msgStrPostConfirm, fp_callback) {
         }
         */
     })
-} /* end of swalYesNowFPCallback */
+} /* end of swalYesNoFPCallback */
 
 /*
  **  end of Messaging-Logging functions
