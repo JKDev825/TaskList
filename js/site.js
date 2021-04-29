@@ -97,6 +97,19 @@ function setDeleteAllButtonDisplay() {
     let taskCount = getTaskListCount();
     let btnDelAll = document.getElementById("btnDelAll");
 
+
+    /*
+     ** 04-29-21 jdj: temporarily omit logic to toggle the button.
+     **              .it no longer appears after the tasks are added and 
+     **               table level buttons are no longer aligned when
+     **               they used to be.
+     **              .see notes above.
+     **
+     **              .added the return stm here to always show until
+     **               I can get this resolved.
+     */
+    return null;
+
     //    btnDelAll.classList.remove("none");
     //    btnDelAll.classList.remove("block text-right");
 
